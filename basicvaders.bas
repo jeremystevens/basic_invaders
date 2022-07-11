@@ -83,6 +83,8 @@ Dim Shared MovementSound As Long
 ' Win or Lose Game
 Dim Shared Lose As Integer
 Dim Shared Win As Integer
+Dim Shared Level As Integer
+Level = 1
 ' Shot Down
 Dim Shared ShotDown As Integer
 ' Play Again?
@@ -100,9 +102,6 @@ Do
     ' Call LoadSettings Sub
     LoadSettings
 
-    ' Pla
-    y Intro Mu
-    .6054sic
     _SndPlay IntroSound
 
     ' Loop until q key is pushed
@@ -121,18 +120,18 @@ Do
         PCopy 1, _Display
         ' Check if Game Over
         CheckGameOver
-
     Loop Until Win = 1 Or Lose = 1
 Loop Until Again = "N"
 
 'LoadSettings Sub
 Sub LoadSettings
     Dim i As Integer
+    Level = 0
     Lose = 0
     Win = 0
     ShotDown = 0
     Shooter.Pic = _LoadImage("basic_invaders\shooter.png")
-    Shooter.Speed = 6
+    Shooter.Speed = 4
     Shooter.Height = 50
     Shooter.Width = 50
     Shooter.X = (w.Width / 2) - (Shooter.Width / 2) - 1
@@ -157,7 +156,14 @@ Sub LoadSettings
         Invaders(i).Right = 1
         Invaders(i).Pic = _LoadImage("basic_invaders\Invaders.png")
         Invaders(i).killed = 0
-        Invaders(i).Speed = 5
+        Dim s As Integer
+        If Level <= 1 Then
+            s = 3
+        End If
+        If Level = 2 Then
+            s = 6
+        End If
+        Invaders(i).Speed = s
         Invaders(i).Height = 50
         Invaders(i).Width = 50
         Invaders(i).Drop = 50
@@ -243,12 +249,22 @@ Sub CheckGameOver
     For i = 1 To NumInvaders
         If Invaders(i).y + Invaders(i).Height >= Shooter.Y And Invaders(i).killed = 0 Then
             Lose = 1
+            Level = 1
         End If
     Next
     If ShotDown = NumInvaders Then
-        Win = 1
+        ' Increase Game Level
+        If Level >= 9 Then
+            Win = 1
+        End If
     End If
+End Sub
 
-
+' Sub To increase Level of Difficulty
+Sub IncreaseLevel
+    Locate 20, 25
+    Level = Level + 1
+    Print "Next Level:", Level
+    Sleep 3
 End Sub
 
