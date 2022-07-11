@@ -197,6 +197,7 @@ End Sub
 Sub MoveInvaders
     Dim i As Integer
     For i = 1 To NumInvaders
+        ' Invaders Logic when invaders gets to end of screen drop down and move to the left or right.
         If Invaders(i).Right = 1 Then
             Invaders(i).x = Invaders(i).x + Invaders(i).Speed
         Else
@@ -216,6 +217,8 @@ Sub MoveInvaders
     Next
 End Sub
 
+
+' check if Invader has been hit sub
 Sub CheckHit
     Dim i As Integer
     For i = 1 To NumInvaders
@@ -227,4 +230,3 @@ Sub CheckHit
         End If
     Next
 End Sub
-
