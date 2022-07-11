@@ -91,33 +91,39 @@ Dim Shared Again As String
 ' Game Window Size
 w.Width = 800
 w.Height = 600
+_Title "Basic Invaders" 'Set the window title
 
 ' Set Window Height and Width Use 32-bit Colors
 Screen _NewImage(w.Width, w.Height, 32)
-
-' Call LoadSettings Sub
-LoadSettings
-
-' Play Intro Music
-_SndPlay IntroSound
-
-' Loop until q key is pushed
 Do
-    _Limit 100
-    PCopy _Display, 1
-    ' Call MoveShooter Sub
-    MoveShooter
-    ' Call FireShot Sub
-    FireShot
-    'Check if Invader is Hit Sub
-    CheckHit
-    ' Call Move Invaders Sub
-    MoveInvaders
-    _Display
-    PCopy 1, _Display
+    Cls
+    ' Call LoadSettings Sub
+    LoadSettings
 
-Loop Until InKey$ = "q"
+    ' Pla
+    y Intro Mu
+    .6054sic
+    _SndPlay IntroSound
 
+    ' Loop until q key is pushed
+    Do
+        _Limit 100
+        PCopy _Display, 1
+        ' Call MoveShooter Sub
+        MoveShooter
+        ' Call FireShot Sub
+        FireShot
+        'Check if Invader is Hit Sub
+        CheckHit
+        ' Call Move Invaders Sub
+        MoveInvaders
+        _Display
+        PCopy 1, _Display
+        ' Check if Game Over
+        CheckGameOver
+
+    Loop Until Win = 1 Or Lose = 1
+Loop Until Again = "N"
 
 'LoadSettings Sub
 Sub LoadSettings
@@ -230,3 +236,19 @@ Sub CheckHit
         End If
     Next
 End Sub
+
+' Check Game Over Sub
+Sub CheckGameOver
+    Dim i As Integer
+    For i = 1 To NumInvaders
+        If Invaders(i).y + Invaders(i).Height >= Shooter.Y And Invaders(i).killed = 0 Then
+            Lose = 1
+        End If
+    Next
+    If ShotDown = NumInvaders Then
+        Win = 1
+    End If
+
+
+End Sub
+
