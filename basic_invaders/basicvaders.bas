@@ -54,6 +54,7 @@ Dim Shared HitSound As Long
 Dim Shared IntroSound As Long
 Dim Shared ShotSound As Long
 Dim Shared WinSound As Long
+Dim Shared MovementSound As Long
 ' Win or Lose Game
 Dim Shared Lose As Integer
 Dim Shared Win As Integer
@@ -71,6 +72,8 @@ Screen _NewImage(w.Width, w.Height, 32)
 
 ' Call LoadSettings Sub
 LoadSettings
+
+_SndPlay IntroSound
 
 ' Loop until q key is pushed
 Do
@@ -109,7 +112,7 @@ Sub LoadSettings
     IntroSound = _SndOpen("basic_invaders\intro.wav", "sync,vol")
     ShotSound = _SndOpen("basic_invaders\shot.wav", "sync,vol")
     WinSound = _SndOpen("basic_invaders\win.wav", "sync,vol")
-
+    MovementSound = _SndOpen("basic_invaders\movement.wav", "sync,vol")
 End Sub
 
 
@@ -130,6 +133,7 @@ Sub FireShot
         _SndPlayCopy ShotSound
         shot.Fired = 1
         shot.X = Shooter.X + (Shooter.Width / 2) - (shot.Width / 2)
+        shot.Y = Shooter.Y
     End If
     If shot.Fired = 1 Then
         shot.Y = shot.Y - shot.Speed
