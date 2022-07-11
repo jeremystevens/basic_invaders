@@ -63,7 +63,7 @@ Dim Shared ShotDown As Integer
 ' Play Again?
 Dim Shared Again As String
 
-' Game Window
+' Game Window Size
 w.Width = 800
 w.Height = 600
 
@@ -73,6 +73,7 @@ Screen _NewImage(w.Width, w.Height, 32)
 ' Call LoadSettings Sub
 LoadSettings
 
+' Play Intro Music
 _SndPlay IntroSound
 
 ' Loop until q key is pushed
@@ -81,7 +82,12 @@ Do
     PCopy _Display, 1
     ' Call MoveShooter Sub
     MoveShooter
+    ' Call FireShot Sub
     FireShot
+    'Check if Invader is Hit Sub
+    CheckHit
+    ' Call Move Invaders Sub
+    MoveInvaders
     _Display
     PCopy 1, _Display
 
@@ -90,6 +96,7 @@ Loop Until InKey$ = "q"
 
 'LoadSettings Sub
 Sub LoadSettings
+    Dim i As Integer
     Lose = 0
     Win = 0
     ShotDown = 0
@@ -112,7 +119,21 @@ Sub LoadSettings
     IntroSound = _SndOpen("basic_invaders\intro.wav", "sync,vol")
     ShotSound = _SndOpen("basic_invaders\shot.wav", "sync,vol")
     WinSound = _SndOpen("basic_invaders\win.wav", "sync,vol")
+    ' (MovementSound) Not implemented
     MovementSound = _SndOpen("basic_invaders\movement.wav", "sync,vol")
+    'Invader settings
+    For i = 1 To NumInvaders
+        Invaders(i).Right = 1
+        Invaders(i).Pic = _LoadImage("basic_invaders\Invaders.png")
+        Invaders(i).killed = 0
+        Invaders(i).Speed = 5
+        Invaders(i).Height = 50
+        Invaders(i).Width = 50
+        Invaders(i).Drop = 50
+        Invaders(i).Spacing = 20
+        Invaders(i).y = 0
+        Invaders(i).x = -i * (Invaders(i).Width + Invaders(i).Spacing)
+    Next
 End Sub
 
 
@@ -146,3 +167,39 @@ Sub FireShot
         shot.Fired = 0
     End If
 End Sub
+
+' Move Invaders Sub
+Sub MoveInvaders
+    Dim i As Integer
+    For i = 1 To NumInvaders
+        If Invaders(i).Right = 1 Then
+            Invaders(i).x = Invaders(i).x + Invaders(i).Speed
+        Else
+            Invaders(i).x = Invaders(i).x - Invaders(i).Speed
+        End If
+        If Invaders(i).x + Invaders(i).Width >= w.Width = -1 And Invaders(i).Right = 1 Then
+            Invaders(i).y = Invaders(i).y + Invaders(i).Drop
+            Invaders(i).Right = 0
+        End If
+        If Invaders(i).x <= 0 And Invaders(i).Right = 0 Then
+            Invaders(i).y = Invaders(i).y + Invaders(i).Drop
+            Invaders(i).Right = 1
+        End If
+        If Invaders(i).killed = 0 Then
+            _PutImage (Invaders(i).x, Invaders(i).y), Invaders(i).Pic
+        End If
+    Next
+End Sub
+
+Sub CheckHit
+    Dim i As Integer
+    For i = 1 To NumInvaders
+        If (shot.X + shot.Width >= Invaders(i).x) And (shot.X <= Invaders(i).x + Invaders(i).Width) And (shot.Y <= Invaders(i).y + Invaders(i).Height) And (shot.Y + shot.Height >= Invaders(i).y) And (Invaders(i).killed = 0) Then
+            _SndPlayCopy HitSound
+            Invaders(i).killed = 1
+            ShotDown = ShotDown + 1
+            shot.Fired = 0
+        End If
+    Next
+End Sub
+
